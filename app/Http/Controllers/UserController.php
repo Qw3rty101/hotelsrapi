@@ -37,9 +37,14 @@ class UserController extends Controller
         return response()->json($user, 201);
     }
 
-    public function show($id)
+    public function getMe($email)
     {
-        $user = User::find($id);
+        // $user = User::find($id);
+        // if (is_null($user)) {
+        //     return response()->json(['message' => 'User not found'], 404);
+        // }
+        // return response()->json($user);
+        $user = User::where('email', $email)->first();
         if (is_null($user)) {
             return response()->json(['message' => 'User not found'], 404);
         }
