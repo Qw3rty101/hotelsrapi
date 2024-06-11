@@ -197,5 +197,7 @@ return [
     */
 
     'same_site' => 'lax',
+    'domain' => env('SESSION_DOMAIN', null),
+    'secure' => env('SESSION_SECURE_COOKIE', false),
 
 ];

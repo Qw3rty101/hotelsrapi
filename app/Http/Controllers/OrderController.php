@@ -27,65 +27,62 @@ class OrderController extends Controller
 
     // Menyimpan order baru
     public function order(Request $request)
-{
-    // Validasi input
-    $validator = Validator::make($request->all(), [
-        'id' => 'required|exists:users,id',
-        'id_room' => 'required|exists:tbl_rooms,id_room',
-        'id_facility' => 'required|exists:tbl_facilities,id_facility',
-        'price_order' => 'required|numeric',
-        'check_in' => 'required|date',
-        'check_out' => 'required|date|after:check_in',
-        'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
-        'status_order' => 'required|in:Booking,Live,Expired',
-    ]);
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:users,id',
+            'id_room' => 'required|exists:tbl_rooms,id_room',
+            'id_facility' => 'required|exists:tbl_facilities,id_facility',
+            'price_order' => 'required|numeric',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+            'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'status_order' => 'required|in:Booking,Live,Expired',
+        ]);
 
-    // Jika validasi gagal, kirimkan pesan kesalahan
-    if ($validator->fails()) {
-        return response()->json($validator->errors(), 422);
+        // Jika validasi gagal, kirimkan pesan kesalahan
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Memasukkan waktu saat ini sebagai 'order_at'
+        $currentTime = now();
+        $requestData = $validator->validated();
+        $requestData['order_at'] = $currentTime;
+
+        // Menghitung selisih hari antara check-in dan check-out
+        $checkIn = Carbon::parse($request->input('check_in'));
+        $checkOut = Carbon::parse($request->input('check_out'));
+        $daysDifference = $checkIn->diffInDays($checkOut);
+
+        // Menghitung total harga berdasarkan selisih hari
+        $totalPrice = $request->input('price_order') * $daysDifference;
+        $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
+
+        // Simpan order baru
+        $order = Order::create($requestData);
+
+        return response()->json(['order' => $order], 201);
     }
 
-    // Memasukkan waktu saat ini sebagai 'order_at'
-    $currentTime = now();
-    $requestData = $validator->validated();
-    $requestData['order_at'] = $currentTime;
 
-    // Menghitung selisih hari antara check-in dan check-out
-    $checkIn = Carbon::parse($request->input('check_in'));
-    $checkOut = Carbon::parse($request->input('check_out'));
-    $daysDifference = $checkIn->diffInDays($checkOut);
-
-    // Menghitung total harga berdasarkan selisih hari
-    $totalPrice = $request->input('price_order') * $daysDifference;
-    $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
-
-    // Simpan order baru
-    $order = Order::create($requestData);
-
-    return response()->json(['order' => $order], 201);
-}
-
+    public function showByUser($userId)
+    {
+        $userOrders = Order::where('id', $userId)->get();
+        
+        return response()->json(['orders' => $userOrders], 200);
+    }
 
 
     // Menampilkan detail order berdasarkan ID
-    public function show($id)
+    public function show($userId)
     {
-        $order = Order::findOrFail($id);
+        // Temukan pesanan berdasarkan ID pengguna dan ID pesanan
+        $order = Order::where('id', $userId)->findOrFail();
+        
         return response()->json(['order' => $order], 200);
     }
-
-    // Mengupdate order berdasarkan ID
-    // public function update(StoreOrderRequest $request, $id)
-    // {
-    //     // Memvalidasi input
-    //     $validatedData = $request->validated();
-
-    //     // Mengupdate order
-    //     $order = Order::findOrFail($id);
-    //     $order->update($validatedData);
-
-    //     return response()->json(['order' => $order], 200);
-    // }
+    
 
     // Menghapus order berdasarkan ID
     public function destroy($id_order)

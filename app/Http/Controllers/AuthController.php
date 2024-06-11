@@ -45,17 +45,17 @@ class AuthController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
+    
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['Keterangan login invalid'], 401);
         }
-
+    
         $user = User::where('email', $request['email'])->first();
-
+    
         $payload = [
             'iss' => 'http://127.0.0.1:8000',
             'iat' => time(),
@@ -65,10 +65,33 @@ class AuthController extends Controller
             'email' => $user->email,
             'role' => $user->role,
         ];
-
+    
         $jwt = JWT::encode($payload, env('FIREBASE_SECRET_KEY'), 'HS256');
+    
+        // Simpan user ID ke session
+        $request->session()->put('user_id', $user->id);
+    
+        // Kembalikan session ID bersama dengan token dan informasi pengguna
+        return response()->json([
+            'access_token' => $jwt,
+            'token_type' => 'Bearer',
+            'session_id' => $request->session()->getId(),
+            'user' => $user->only(['id', 'name', 'email']) // Informasi pengguna yang dikembalikan
+        ]);
+    }
+    
 
-        return response()->json(['access_token' => $jwt, 'token_type' => 'Bearer']);
+    // Tambahkan method untuk mengambil data user dari session
+    public function getUserData(Request $request)
+    {
+        $userId = $request->session()->get('user_id');
+        
+        if ($userId) {
+            $user = User::find($userId);
+            return response()->json(['user' => $user]);
+        } else {
+            return response()->json(['message' => 'No user logged in'], 401);
+        }
     }
 
     public function logout(Request $request)
@@ -77,14 +100,6 @@ class AuthController extends Controller
         Cache::put('blacklisted_token:' . $token, true, now()->addHours(1)); 
 
         return response()->json(['Sudah berhasil Log out']);
-    }
-
-    public function profile(Request $request)
-    {
-        // Mengakses informasi pengguna dari token
-        $user = $request->user();
-
-        return response()->json($user);
     }
 
     public function redirectToGoogle()

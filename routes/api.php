@@ -12,7 +12,6 @@ use App\Models\Order;
 
 // Routes untuk autentikasi
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login'])->middleware('cors');
 Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
@@ -32,17 +31,25 @@ Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback
 
 
 
-Route::get('user/{id}', [UserController::class, 'getMe']);
+
 // Routes public untuk hanya melihat product
 // Route::get('product', [ProductController::class, 'show']);
-Route::get('room', [RoomController::class, 'show']);
+
 // Route::get('products', [ProductController::class, 'index']);
+
+Route::post('login', [AuthController::class, 'login'])->middleware('cors');
+Route::get('user/{id}', [UserController::class, 'getMe']);
+
+Route::get('room', [RoomController::class, 'show']);
+
+Route::get('order/{userId}', [OrderController::class, 'showByUser']);
+
 Route::post('order', [OrderController::class, 'order']);
 Route::get('order', [OrderController::class, 'getOrders']);
 Route::delete('order/{id_order}', [OrderController::class, 'destroy']);
 
-
-
+Route::middleware(['check.jwt'])->group(function () {
+});
 
 
 
