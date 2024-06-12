@@ -76,7 +76,7 @@ class AuthController extends Controller
             'access_token' => $jwt,
             'token_type' => 'Bearer',
             'session_id' => $request->session()->getId(),
-            'user' => $user->only(['id', 'name', 'email']) // Informasi pengguna yang dikembalikan
+            'user' => $user->only(['id', 'name', 'email', 'role']) // Informasi pengguna yang dikembalikan
         ]);
     }
     

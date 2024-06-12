@@ -26,44 +26,82 @@ class OrderController extends Controller
     }
 
     // Menyimpan order baru
+    // public function order(Request $request)
+    // {
+    //     // Validasi input
+    //     $validator = Validator::make($request->all(), [
+    //         'id' => 'required|exists:users,id',
+    //         'id_room' => 'required|exists:tbl_rooms,id_room',
+    //         'id_facility' => 'required|exists:tbl_facilities,id_facility',
+    //         'price_order' => 'required|numeric',
+    //         'check_in' => 'required|date',
+    //         'check_out' => 'required|date|after:check_in',
+    //         'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+    //         'status_order' => 'required|in:Booking,Live,Expired',
+    //     ]);
+
+    //     // Jika validasi gagal, kirimkan pesan kesalahan
+    //     if ($validator->fails()) {
+    //         return response()->json($validator->errors(), 422);
+    //     }
+
+    //     // Memasukkan waktu saat ini sebagai 'order_at'
+    //     $currentTime = now();
+    //     $requestData = $validator->validated();
+    //     $requestData['order_at'] = $currentTime;
+
+    //     // Menghitung selisih hari antara check-in dan check-out
+    //     $checkIn = Carbon::parse($request->input('check_in'));
+    //     $checkOut = Carbon::parse($request->input('check_out'));
+    //     $daysDifference = $checkIn->diffInDays($checkOut);
+
+    //     // Menghitung total harga berdasarkan selisih hari
+    //     $totalPrice = $request->input('price_order') * $daysDifference;
+    //     $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
+
+    //     // Simpan order baru
+    //     $order = Order::create($requestData);
+
+    //     return response()->json(['order' => $order], 201);
+    // }
+
     public function order(Request $request)
-    {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:users,id',
-            'id_room' => 'required|exists:tbl_rooms,id_room',
-            'id_facility' => 'required|exists:tbl_facilities,id_facility',
-            'price_order' => 'required|numeric',
-            'check_in' => 'required|date',
-            'check_out' => 'required|date|after:check_in',
-            'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
-            'status_order' => 'required|in:Booking,Live,Expired',
-        ]);
+{
+    // Validasi input
+    $validator = Validator::make($request->all(), [
+        'id' => 'required|exists:users,id',
+        'id_room' => 'required|exists:tbl_rooms,id_room',
+        'id_facility' => 'required|exists:tbl_facilities,id_facility',
+        'price_order' => 'required|numeric',
+        'check_in' => 'required|date',
+        'check_out' => 'required|date|after:check_in',
+        'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+        'status_order' => 'required|in:Booking,Live,Expired',
+    ]);
 
-        // Jika validasi gagal, kirimkan pesan kesalahan
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Memasukkan waktu saat ini sebagai 'order_at'
-        $currentTime = now();
-        $requestData = $validator->validated();
-        $requestData['order_at'] = $currentTime;
-
-        // Menghitung selisih hari antara check-in dan check-out
-        $checkIn = Carbon::parse($request->input('check_in'));
-        $checkOut = Carbon::parse($request->input('check_out'));
-        $daysDifference = $checkIn->diffInDays($checkOut);
-
-        // Menghitung total harga berdasarkan selisih hari
-        $totalPrice = $request->input('price_order') * $daysDifference;
-        $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
-
-        // Simpan order baru
-        $order = Order::create($requestData);
-
-        return response()->json(['order' => $order], 201);
+    // Jika validasi gagal, kirimkan pesan kesalahan
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    // Memasukkan waktu saat ini sebagai 'order_at'
+    $requestData = $validator->validated();
+    $requestData['order_at'] = now();
+
+    // Menghitung selisih hari antara check-in dan check-out
+    $checkIn = Carbon::parse($request->input('check_in'));
+    $checkOut = Carbon::parse($request->input('check_out'));
+    $daysDifference = $checkIn->diffInDays($checkOut);
+
+    // Menghitung total harga berdasarkan selisih hari
+    $totalPrice = $request->input('price_order') * $daysDifference;
+    $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
+
+    // Simpan order baru
+    $order = Order::create($requestData);
+
+    return response()->json(['order' => $order], 201);
+}
 
 
     public function showByUser($userId)
@@ -106,5 +144,45 @@ class OrderController extends Controller
         $totalPrice = $pricePerNight * $numberOfNights;
 
         return response()->json(['total_price' => $totalPrice], 200);
+    }
+
+    public function checkStatus($id_order)
+    {
+        // Mengambil pesanan berdasarkan ID_order
+        $order = Order::findOrFail($id_order);
+
+        // Mengambil tanggal hari ini
+        $today = Carbon::now()->toDateString();
+
+        // Mengambil tanggal check_out dan order_time dari database
+        $checkOutDate = Carbon::parse($order->check_out)->toDateString();
+
+        // Mengambil waktu sekarang
+        $currentTime = Carbon::now();
+
+        // Mengubah waktu order_time dari string menjadi objek Carbon
+        $orderTime = Carbon::parse($order->order_time);
+
+        // Memeriksa apakah hari ini sesuai dengan tanggal check_out dan waktu persis sama dengan order_time
+        if ($today === $checkOutDate && $currentTime->greaterThanOrEqualTo($orderTime)) {
+            // Jika benar, ubah status_order menjadi "expired"
+            $order->status_order = 'Expired';
+            $order->save();
+        
+            return response()->json(['message' => 'order expired']);
+        }
+
+        return response()->json(['message' => 'order belum expired']);
+    }
+
+    public function pay($id_order)
+    {
+        $order = Order::findOrFail($id_order);
+
+        // Ubah status_order menjadi "Live"
+        $order->status_order = 'Live';
+        $order->save();
+
+        return response()->json(['message' => 'Status menjadi live!'], 200);
     }
 }

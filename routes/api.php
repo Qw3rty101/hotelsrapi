@@ -37,19 +37,22 @@ Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback
 
 // Route::get('products', [ProductController::class, 'index']);
 
+
+
 Route::post('login', [AuthController::class, 'login'])->middleware('cors');
-
 Route::get('user/{id}', [UserController::class, 'getMe']);
-
 Route::get('room', [RoomController::class, 'show']);
 
 Route::get('order/{userId}', [OrderController::class, 'showByUser']);
-
-Route::post('order', [OrderController::class, 'order']);
 Route::get('order', [OrderController::class, 'getOrders']);
+Route::post('order', [OrderController::class, 'order']);
+Route::post('order/pay/{id_order}', [OrderController::class, 'pay']);
+Route::post('order/checkStatus/{id_order}', [OrderController::class, 'checkStatus']);
 Route::delete('order/{id_order}', [OrderController::class, 'destroy']);
 
 Route::post('logout', [AuthController::class, 'logout']);
+
+
 
 
 Route::middleware(['check.jwt'])->group(function () {
