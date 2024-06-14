@@ -37,7 +37,7 @@ Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback
 
 // Route::get('products', [ProductController::class, 'index']);
 
-
+// https://fawazpbf.vyst.my.id/
 
 Route::post('login', [AuthController::class, 'login'])->middleware('cors');
 Route::get('user/{id}', [UserController::class, 'getMe']);
