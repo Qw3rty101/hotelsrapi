@@ -127,7 +127,12 @@ class AuthController extends Controller
 
                 $jwt = JWT::encode($payload, env('FIREBASE_SECRET_KEY'), 'HS256');
 
-                return response()->json(['access_token' => $jwt, 'token_type' => 'Bearer']);
+                // return response()->json(['access_token' => $jwt, 'token_type' => 'Bearer']);
+                return response()->json([
+                    'access_token' => $jwt,
+                    'token_type' => 'Bearer',
+                    'user' => $user->only(['id', 'name', 'email', 'role']) // Informasi pengguna yang dikembalikan
+                ]);
             } else {
                 $user = User::create([
                     'name' => $googleUser->name,
@@ -148,7 +153,12 @@ class AuthController extends Controller
 
                 $jwt = JWT::encode($payload, env('FIREBASE_SECRET_KEY'), 'HS256');
 
-                return response()->json(['access_token' => $jwt, 'token_type' => 'Bearer']);
+                // return response()->json(['access_token' => $jwt, 'token_type' => 'Bearer']);
+                return response()->json([
+                    'access_token' => $jwt,
+                    'token_type' => 'Bearer',
+                    'user' => $user->only(['id', 'name', 'email', 'role']) // Informasi pengguna yang dikembalikan
+                ]);
             }
         } catch (\Exception $e) {
             Log::error('Google authentication failed', ['exception' => $e->getMessage()]);

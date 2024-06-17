@@ -12,8 +12,8 @@ use App\Models\Order;
 
 // Routes untuk autentikasi
 Route::post('register', [AuthController::class, 'register']);
-Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+Route::get('auth/google', [AuthController::class, 'redirectToGoogle'])->middleware('cors');
+Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->middleware('cors');
 
 
 
