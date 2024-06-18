@@ -12,6 +12,7 @@ class CreateTblRoomsTable extends Migration
             $table->id('id_room');
             $table->string('name_room');
             $table->integer('price');
+            $table->integer('qty');
             $table->text('rating');
             $table->string('short_desc');
             $table->text('detail_desc');

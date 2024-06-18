@@ -7,6 +7,7 @@ use App\Models\Order;
 // use App\Http\Requests\StoreOrderRequest; // Import validasi request jika diperlukan
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon; // Import Carbon untuk manipulasi tanggal
+use App\Models\Room;
 
 class OrderController extends Controller
 {
@@ -66,42 +67,54 @@ class OrderController extends Controller
     // }
 
     public function order(Request $request)
-{
-    // Validasi input
-    $validator = Validator::make($request->all(), [
-        'id' => 'required|exists:users,id',
-        'id_room' => 'required|exists:tbl_rooms,id_room',
-        'id_facility' => 'required|exists:tbl_facilities,id_facility',
-        'price_order' => 'required|numeric',
-        'check_in' => 'required|date',
-        'check_out' => 'required|date|after:check_in',
-        'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
-        'status_order' => 'required|in:Booking,Live,Expired',
-    ]);
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:users,id',
+            'id_room' => 'required|exists:tbl_rooms,id_room',
+            'id_facility' => 'required|exists:tbl_facilities,id_facility',
+            'price_order' => 'required|numeric',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+            'order_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'status_order' => 'required|in:Booking,Live,Expired',
+        ]);
 
-    // Jika validasi gagal, kirimkan pesan kesalahan
-    if ($validator->fails()) {
-        return response()->json($validator->errors(), 422);
+        // Jika validasi gagal, kirimkan pesan kesalahan
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Memasukkan waktu saat ini sebagai 'order_at'
+        $requestData = $validator->validated();
+        $requestData['order_at'] = now();
+
+        // Menghitung selisih hari antara check-in dan check-out
+        $checkIn = Carbon::parse($request->input('check_in'));
+        $checkOut = Carbon::parse($request->input('check_out'));
+        $daysDifference = $checkIn->diffInDays($checkOut);
+
+        // Menghitung total harga berdasarkan selisih hari
+        $totalPrice = $request->input('price_order') * $daysDifference;
+        $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
+
+        $room = Room::where('id_room', $request->id_room);
+        $roomData = $room->get();
+        if ($roomData[0]->qty <= 0) {
+            return response()->json(['error' => 'Kamar tidak tersedia'], 400);
+        }
+        
+        $qty = $roomData[0]->qty - 1;
+        
+        $room->update([
+            'qty' => $qty
+        ]);
+
+        $order = Order::create($requestData);
+
+        return response()->json(['order' => $order], 201);
+        // return response()->json($room);
     }
-
-    // Memasukkan waktu saat ini sebagai 'order_at'
-    $requestData = $validator->validated();
-    $requestData['order_at'] = now();
-
-    // Menghitung selisih hari antara check-in dan check-out
-    $checkIn = Carbon::parse($request->input('check_in'));
-    $checkOut = Carbon::parse($request->input('check_out'));
-    $daysDifference = $checkIn->diffInDays($checkOut);
-
-    // Menghitung total harga berdasarkan selisih hari
-    $totalPrice = $request->input('price_order') * $daysDifference;
-    $requestData['price_order'] = $totalPrice; // Menyimpan total harga ke dalam request data
-
-    // Simpan order baru
-    $order = Order::create($requestData);
-
-    return response()->json(['order' => $order], 201);
-}
 
 
     public function showByUser($userId)
@@ -126,8 +139,18 @@ class OrderController extends Controller
     public function destroy($id_order)
     {
         $order = Order::findOrFail($id_order);
-        $order->delete();
+        $room = Room::where('id_room', $order->id_room);
+        $roomData = $room->get();
+        
+        $qty = $roomData[0]->qty + 1;
+        
+        $room->update([
+            'qty' => $qty
+        ]);
 
+        $order->delete();
+        // return response()->json($roomData);
+        
         return response()->json(['message' => 'Order deleted successfully'], 200);
     }
 

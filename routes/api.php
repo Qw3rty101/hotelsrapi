@@ -12,8 +12,13 @@ use App\Models\Order;
 
 // Routes untuk autentikasi
 Route::post('register', [AuthController::class, 'register']);
-Route::get('auth/google', [AuthController::class, 'redirectToGoogle'])->middleware('cors');
-Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->middleware('cors');
+
+Route::group(['middleware' => ['cors']], function () {
+    Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
+    Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:rateLimiterku');
+});
+
 
 
 
@@ -39,7 +44,7 @@ Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback
 
 // https://fawazpbf.vyst.my.id/
 
-Route::post('login', [AuthController::class, 'login'])->middleware('cors');
+
 Route::get('user/{id}', [UserController::class, 'getMe']);
 Route::get('room', [RoomController::class, 'show']);
 
