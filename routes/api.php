@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Models\Order;
 
 // Routes untuk autentikasi
+// ddos, sqli, xss, excessive dataexsposure, mass assignment misconfiguration,
 Route::post('register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => ['cors']], function () {

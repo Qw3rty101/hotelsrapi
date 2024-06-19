@@ -151,7 +151,7 @@ class OrderController extends Controller
         $order->delete();
         // return response()->json($roomData);
         
-        return response()->json(['message' => 'Order deleted successfully'], 200);
+        return response()->json(['message' => 'Room Cancel, successfully'], 200);
     }
 
     // Contoh metode tambahan: Menghitung total harga order
