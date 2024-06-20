@@ -14,14 +14,31 @@ use App\Models\Order;
 // ddos, sqli, xss, excessive dataexsposure, mass assignment misconfiguration,
 Route::post('register', [AuthController::class, 'register']);
 
-Route::group(['middleware' => ['cors']], function () {
-    Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
-    Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
-    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:rateLimiterku');
+
+
+Route::group(['middleware' => ['VeryfyApiKey']], function () {
+
+    Route::group(['middleware' => ['cors']], function () {
+        Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
+        Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:rateLimiterku');
+    });
+    
+
+    Route::get('user/{id}', [UserController::class, 'getMe']);
+    Route::get('room', [RoomController::class, 'show']);
+
+    Route::get('order/{userId}', [OrderController::class, 'showByUser']);
+    Route::get('order', [OrderController::class, 'getOrders']);
+    Route::post('order', [OrderController::class, 'order']);
+    Route::post('order/pay/{id_order}', [OrderController::class, 'pay']);
+
+    Route::post('order/checkStatus/{id_order}', [OrderController::class, 'checkStatus']);
+
+    Route::delete('order/{id_order}', [OrderController::class, 'destroy']);
+
+    Route::post('logout', [AuthController::class, 'logout']);
 });
-
-
-
 
 
 
@@ -46,26 +63,14 @@ Route::group(['middleware' => ['cors']], function () {
 // https://fawazpbf.vyst.my.id/
 
 
-Route::get('user/{id}', [UserController::class, 'getMe']);
-Route::get('room', [RoomController::class, 'show']);
-
-Route::get('order/{userId}', [OrderController::class, 'showByUser']);
-Route::get('order', [OrderController::class, 'getOrders']);
-Route::post('order', [OrderController::class, 'order']);
-Route::post('order/pay/{id_order}', [OrderController::class, 'pay']);
-
-Route::post('order/checkStatus/{id_order}', [OrderController::class, 'checkStatus']);
-
-Route::delete('order/{id_order}', [OrderController::class, 'destroy']);
-
-Route::post('logout', [AuthController::class, 'logout']);
 
 
 
 
-Route::middleware(['check.jwt'])->group(function () {
 
-});
+// Route::middleware(['check.jwt'])->group(function () {
+
+// });
 
 
 

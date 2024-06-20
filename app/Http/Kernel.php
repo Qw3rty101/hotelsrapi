@@ -47,7 +47,7 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        
+
     ];
 
     /**
@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'verify.firebase.token' => \App\Http\Middleware\VerifyFirebaseToken::class,
         'check.jwt' => \App\Http\Middleware\CheckJWT::class,
         'cors' => \App\Http\Middleware\Cors::class, 
+        'VeryfyApiKey' => \App\Http\Middleware\VerifyApiKey::class,
     ];
 }
