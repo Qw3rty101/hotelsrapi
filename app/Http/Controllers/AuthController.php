@@ -57,7 +57,7 @@ class AuthController extends Controller
         $user = User::where('email', $request['email'])->first();
 
         $payload = [
-            'iss' => 'http://127.0.0.1:8000',
+            'iss' => env("APP_URL"),
             'iat' => time(),
             'exp' => time() + 3600,
             'sub' => $user->id,
@@ -116,7 +116,7 @@ class AuthController extends Controller
 
             if ($user) {
                 $payload = [
-                    'iss' => 'http://127.0.0.1:8000',
+                    'iss' => env("APP_URL"),
                     'iat' => time(),
                     'exp' => time() + 3600,
                     'sub' => $user->id,
@@ -142,7 +142,7 @@ class AuthController extends Controller
                 ]);
 
                 $payload = [
-                    'iss' => 'http://127.0.0.1:8000',
+                    'iss' => env("APP_URL"),
                     'iat' => time(),
                     'exp' => time() + 3600,
                     'sub' => $user->id,

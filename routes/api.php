@@ -18,6 +18,7 @@ Route::group(['middleware' => ['VeryfyApiKey']], function () {
     Route::group(['middleware' => ['cors']], function () {
         Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
         Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+        
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:rateLimiterku');
     });
     
