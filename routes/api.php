@@ -10,13 +10,10 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Models\Order;
 
-// Routes untuk autentikasi
-// ddos, sqli, xss, excessive dataexsposure, mass assignment misconfiguration,
-Route::post('register', [AuthController::class, 'register']);
-
-
-
 Route::group(['middleware' => ['VeryfyApiKey']], function () {
+
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('loginGoogle', [AuthController::class, 'loginWithGoogle']);
 
     Route::group(['middleware' => ['cors']], function () {
         Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
