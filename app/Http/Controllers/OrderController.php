@@ -103,9 +103,9 @@ class OrderController extends Controller
         if ($roomData[0]->qty <= 0) {
             return response()->json(['error' => 'Kamar tidak tersedia'], 400);
         }
-        
+
         $qty = $roomData[0]->qty - 1;
-        
+
         $room->update([
             'qty' => $qty
         ]);
@@ -120,7 +120,7 @@ class OrderController extends Controller
     public function showByUser($userId)
     {
         $userOrders = Order::where('id', $userId)->get();
-        
+
         return response()->json(['orders' => $userOrders], 200);
     }
 
@@ -130,10 +130,10 @@ class OrderController extends Controller
     {
         // Temukan pesanan berdasarkan ID pengguna dan ID pesanan
         $order = Order::where('id', $userId)->findOrFail();
-        
+
         return response()->json(['order' => $order], 200);
     }
-    
+
 
     // Menghapus order berdasarkan ID
     public function destroy($id_order)
@@ -141,16 +141,16 @@ class OrderController extends Controller
         $order = Order::findOrFail($id_order);
         $room = Room::where('id_room', $order->id_room);
         $roomData = $room->get();
-        
+
         $qty = $roomData[0]->qty + 1;
-        
+
         $room->update([
             'qty' => $qty
         ]);
 
         $order->delete();
         // return response()->json($roomData);
-        
+
         return response()->json(['message' => 'Room Cancel, successfully'], 200);
     }
 
@@ -191,7 +191,7 @@ class OrderController extends Controller
             // Jika benar, ubah status_order menjadi "expired"
             $order->status_order = 'Expired';
             $order->save();
-        
+
             return response()->json(['message' => 'order expired']);
         }
 
@@ -207,5 +207,27 @@ class OrderController extends Controller
         $order->save();
 
         return response()->json(['message' => 'Status menjadi live!'], 200);
+    }
+
+    public function checkoutNow($id_order)
+    {
+        $order = Order::findOrFail($id_order);
+        $room = Room::where('id_room', $order->id_room);
+        $roomData = $room->get();
+
+        $qty = $roomData[0]->qty + 1;
+
+        $room->update([
+            'qty' => $qty
+        ]);
+
+        // $order->delete();
+
+        // Ubah status_order menjadi "Expired"
+        $order->status_order = 'Expired';
+        $order->save();
+
+        // return response()->json($order);
+        return response()->json(['message' => 'Order Check Out!'], 200);
     }
 }

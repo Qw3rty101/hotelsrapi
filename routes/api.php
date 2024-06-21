@@ -32,6 +32,7 @@ Route::group(['middleware' => ['VeryfyApiKey']], function () {
     Route::post('order/pay/{id_order}', [OrderController::class, 'pay']);
 
     Route::post('order/checkStatus/{id_order}', [OrderController::class, 'checkStatus']);
+    Route::post('order/checkout/{id_order}', [OrderController::class, 'checkoutNow']);
 
     Route::delete('order/{id_order}', [OrderController::class, 'destroy']);
 
