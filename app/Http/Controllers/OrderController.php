@@ -171,22 +171,16 @@ class OrderController extends Controller
 
     public function checkStatus($id_order)
     {
-        // Mengambil pesanan berdasarkan ID_order
         $order = Order::findOrFail($id_order);
 
-        // Mengambil tanggal hari ini
         $today = Carbon::now()->toDateString();
 
-        // Mengambil tanggal check_out dan order_time dari database
         $checkOutDate = Carbon::parse($order->check_out)->toDateString();
 
-        // Mengambil waktu sekarang
         $currentTime = Carbon::now();
 
-        // Mengubah waktu order_time dari string menjadi objek Carbon
         $orderTime = Carbon::parse($order->order_time);
 
-        // Memeriksa apakah hari ini sesuai dengan tanggal check_out dan waktu persis sama dengan order_time
         if ($today === $checkOutDate && $currentTime->greaterThanOrEqualTo($orderTime)) {
             // Jika benar, ubah status_order menjadi "expired"
             $order->status_order = 'Expired';
@@ -221,9 +215,19 @@ class OrderController extends Controller
             'qty' => $qty
         ]);
 
-        // $order->delete();
 
         // Ubah status_order menjadi "Expired"
+        $order->status_order = 'Expired';
+        $order->save();
+
+        return response()->json(['message' => 'Order Check Out!'], 200);
+    }
+
+    public function delete($id_order)
+    {
+        $order = Order::findOrFail($id_order);
+        $room = Room::where('id_room', $order->id_room);
+
         $order->status_order = 'Expired';
         $order->save();
 
