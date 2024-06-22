@@ -1,0 +1,497 @@
+{
+	"info": {
+		"_postman_id": "1c364d7e-1211-4f03-98f6-268934e7cb28",
+		"name": "HOTELSR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27963232"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "make order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"id_room\": 4,\r\n    \"id_facility\": 1,\r\n    \"price_order\": 300000,\r\n    \"check_in\": \"2024-06-15\",\r\n    \"check_out\": \"2024-06-18\",\r\n    \"order_time\": \"10:10:00\",\r\n    \"status_order\": \"Booking\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "manual check out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/order/checkout/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"order",
+								"checkout",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get room",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/room",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/api/order/0",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete history",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/api/order/delete/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"delete",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "system",
+			"item": [
+				{
+					"name": "pay",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order/pay/3",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"pay",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check status order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order/checkStatus/28",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"checkStatus",
+								"28"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get order status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/api/order/checkStatus/15",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"checkStatus",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/user/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/api/order",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"user@gmail.com\",\r\n    \"password\" : \"user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"ares\",\r\n    \"email\" : \"ares@gmail.com\",\r\n    \"password\" : \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login By Google",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/loginGoogle",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"loginGoogle"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "https://fawazpbf.vyst.my.id",
+			"type": "string"
+		},
+		{
+			"key": "testingURL",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "x-api-key",
+			"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+			"type": "string"
+		}
+	]
+}
