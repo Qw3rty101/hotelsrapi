@@ -228,10 +228,10 @@ class OrderController extends Controller
         $order = Order::findOrFail($id_order);
         $room = Room::where('id_room', $order->id_room);
 
-        $order->status_order = 'Expired';
-        $order->save();
+        // $order->status_order = 'Expired';
+        $order->delete();
 
         // return response()->json($order);
-        return response()->json(['message' => 'Order Check Out!'], 200);
+        return response()->json(['message' => 'deleted'], 200);
     }
 }
