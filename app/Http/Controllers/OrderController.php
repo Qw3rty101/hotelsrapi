@@ -183,6 +183,16 @@ class OrderController extends Controller
 
         if ($today === $checkOutDate && $currentTime->greaterThanOrEqualTo($orderTime)) {
             // Jika benar, ubah status_order menjadi "expired"
+
+            $room = Room::where('id_room', $order->id_room);
+            $roomData = $room->get();
+
+            $qty = $roomData[0]->qty + 1;
+
+            $room->update([
+                'qty' => $qty
+            ]);
+
             $order->status_order = 'Expired';
             $order->save();
 
