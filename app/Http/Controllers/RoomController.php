@@ -16,4 +16,18 @@ class RoomController extends Controller
 
         return response()->json($rooms,200);
     }
+
+    public function updateQuantities(Request $request)
+    {
+        $rooms = $request->input('rooms');
+
+        foreach ($rooms as $roomData) {
+            $room = Room::find($roomData['id_room']);
+            if ($room) {
+                $room->update(['qty' => $roomData['qty']]);
+            }
+        }
+
+        return response()->json(['message' => 'Quantities updated successfully'], 200);
+    }
 }

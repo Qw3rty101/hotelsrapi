@@ -10,6 +10,7 @@ class Room extends Model
     use HasFactory;
 
     protected $table = 'tbl_rooms';
+    protected $primaryKey = 'id_room';
 
     protected $fillable = [
         'name_room',
