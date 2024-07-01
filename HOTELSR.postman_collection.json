@@ -166,7 +166,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/api/order/delete/2",
+							"raw": "{{baseURL}}/api/order/delete/7",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -174,7 +174,7 @@
 								"api",
 								"order",
 								"delete",
-								"2"
+								"7"
 							]
 						}
 					},
@@ -251,15 +251,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/order/checkStatus/28",
+							"raw": "{{baseURL}}/api/order/checkStatus",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"order",
-								"checkStatus",
-								"28"
+								"checkStatus"
 							]
 						}
 					},
@@ -361,6 +360,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "edit qty room",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "Mhf38AsUNg8MNm1sRVQTwVNMPeblNZ9AgYi7MoV90NHdlPYChA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rooms\": [\r\n    {\r\n      \"id_room\": 1,\r\n      \"qty\": 10\r\n    },\r\n    {\r\n      \"id_room\": 2,\r\n      \"qty\": 15\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/room/update-quantities",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"room",
+								"update-quantities"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -377,7 +410,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"user@gmail.com\",\r\n    \"password\" : \"user\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"user@gmail.com\",\r\n    \"password\" : \"use\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -449,6 +482,25 @@
 					"path": [
 						"api",
 						"loginGoogle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{testingURL}}/api/payment/sesssion",
+					"host": [
+						"{{testingURL}}"
+					],
+					"path": [
+						"api",
+						"payment",
+						"sesssion"
 					]
 				}
 			},
